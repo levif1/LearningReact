@@ -20,6 +20,12 @@ body {
   margin: 0 auto;
 }
 
+.verifyLink{
+  color: blue;
+  cursor: pointer;
+  padding-left: 5px;
+}
+
 .add-item {
   border-radius: 2px;
   border-top: 3px solid #103D5D;

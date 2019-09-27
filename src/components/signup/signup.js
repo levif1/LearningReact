@@ -10,11 +10,15 @@ class SignUp extends Component {
         password: '',
         passwordMessage: '',
         emailMessage: '',
+        name: ''
       }
+
       this.handleChange = this.handleChange.bind(this);
       this.handleEmailSignup = this.handleEmailSignup.bind(this);
       this.validatePassword = this.validatePassword.bind(this);
       this.validateEmail = this.validateEmail.bind(this);
+
+       
     }
 
     render(){
@@ -26,6 +30,7 @@ class SignUp extends Component {
                     
                     <form onSubmit={this.handleEmailSignup}>
                         <p className="errorMessage">{this.state.errorMessage}</p>
+                        <input type="text" name="name" placeholder="Name" onChange={this.handleChange} value={this.state.name}/>
                         <input type="email" name="email" placeholder="Email" onChange={this.handleChange} value={this.state.email}/>
                         <p className="errorMessage">{this.state.emailMessage}</p>
                         <input type="password" name="password" placeholder="Password" onChange={this.handleChange} value={this.state.password}/>
@@ -44,8 +49,10 @@ class SignUp extends Component {
         await this.validateEmail();
         await this.validatePassword();
         if(this.state.emailMessage === '' && this.state.passwordMessage === '') {
-            auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
-            .then((result) => {
+           await auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
+            .then(async (result) => {
+                await auth.currentUser.updateProfile({displayName: this.state.name});
+                await auth.currentUser.sendEmailVerification();
                 this.props.changeRegister();
             })
             
@@ -62,7 +69,6 @@ class SignUp extends Component {
                     
                     default:
                         message = error.message;
-                        console.log(error.code);
                         break;
                 }
                 

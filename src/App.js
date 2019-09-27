@@ -16,7 +16,8 @@ class App extends Component {
       phoneNumber: '',
       items: [],
       user: null,
-      register: false
+      register: false,
+      loading: false
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -25,31 +26,31 @@ class App extends Component {
     this.logout = this.logout.bind(this);
     this.removeItem = this.removeItem.bind(this);
     this.changeRegister = this.changeRegister.bind(this);
-
+    this.sendEmailVerification = this.sendEmailVerification.bind(this);
       
       
 
       auth.onAuthStateChanged((user) => {
-        if (user) {
-          this.setState({ user: user });
-          let userID = firebase.auth().currentUser.uid
-          const itemsRef = firebase.database().ref(`/items/${userID}/`);
-          //component did mount
-          itemsRef.on('value', (snapshot) => {
-            let items = snapshot.val();
-            let newState = [];
-            for (let item in items) {
-              newState.push({
-                id: item,
-                firstName: items[item].first,
-                lastName: items[item].last,
-                email: items[item].email,
-                phoneNumber: items[item].phoneNumber
-              });
-            }
-            this.setState({items: newState});
-          });
-        }
+          if (user) {
+            this.setState({ user: user });
+            let userID = firebase.auth().currentUser.uid;
+            const itemsRef = firebase.database().ref(`/items/${userID}/`);
+            //component did mount
+            itemsRef.on('value', (snapshot) => {
+              let items = snapshot.val();
+              let newState = [];
+              for (let item in items) {
+                newState.push({
+                  id: item,
+                  firstName: items[item].first,
+                  lastName: items[item].last,
+                  email: items[item].email,
+                  phoneNumber: items[item].phoneNumber
+                });
+              }
+              this.setState({items: newState});
+            });
+          }
       });
     }
   
@@ -61,15 +62,20 @@ class App extends Component {
           <Header user={this.state.user} logout={this.logout}></Header>
 
             {
+              //if the user is logged out
               !this.state.user ?
                 <div className='container'>
                   {!this.state.register ?
+                  //if they need to register
                   <Login changeUser={this.changeUser} changeRegister={this.changeRegister}></Login>
                   :
                   <SignUp></SignUp>
                   }     
                 </div>
               :
+                  //they are logged it
+              auth.currentUser.emailVerified? 
+              //if there email is verified   
               <div className='container'>
                 <section className='add-item'>
                   <form onSubmit={this.handleSubmit}>
@@ -98,12 +104,25 @@ class App extends Component {
                     </ul>
                   </div>
                 </section>
+              </div> 
+              :
+              <div className='container'>
+                Email not verified <a onClick={this.sendEmailVerification} className="verifyLink"> click here to resend email</a>
+                <p>Please refresh if you've verified</p>
               </div>
+
             }
             
           </div>
     );
 
+  }
+
+  sendEmailVerification(){
+    auth.currentUser.sendEmailVerification()
+    .catch((error) => {
+      window.alert("Too Many Requests Please Wait");
+    });
   }
 
   changeUser(user){

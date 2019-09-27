@@ -16,7 +16,7 @@ class Header extends Component {
                 {
                   this.props.user ?
                   <div className='wrapper'>
-                    <h1>Hello {this.props.user.email}</h1>
+                    <h1>Hello {this.props.user.displayName}</h1>
                     <button onClick={this.props.logout}>Log Out</button>
                   </div>             
                   :
