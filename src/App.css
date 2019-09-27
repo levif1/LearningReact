@@ -3,39 +3,9 @@ body {
   background-color: #fff;
 }
 
-header {
-  color: #fff;
-  background-color: #103D5D;
-  padding: 33px 0 25px 15px;
-}
-
-header p {
-  width: 400px;
-  margin: 0 auto;
-}
-header .wrapper {
-  display: flex;
-  justify-content: space-between;
-}
-
-header h1 {
-  font-size: 25px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  display: inline-block;
-  margin: 0;
-  vertical-align: middle;
-  
-}
-
 .fa {
   font-size: 22px;
   transform: translateY(50deg);  
-}
-
-header i {
-  vertical-align: middle;
-  margin-left: 12px;
 }
 
 .container {
